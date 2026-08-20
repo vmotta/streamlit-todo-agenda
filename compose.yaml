@@ -1,0 +1,16 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8501:8501"
+    environment:
+      AUTH_MODE: none
+      DATABASE_URL: sqlite:////app/data/organiza.db
+      DEFAULT_TIMEZONE: America/Sao_Paulo
+    volumes:
+      - organiza_data:/app/data
+    restart: unless-stopped
+
+volumes:
+  organiza_data:
+

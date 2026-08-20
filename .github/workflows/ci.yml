@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: [main, "feature/**"]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Lint, tipos, testes e segurança
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Instalar uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: "0.12.5"
+          enable-cache: true
+      - name: Instalar Python
+        run: uv python install 3.12
+      - name: Instalar dependências pelo lockfile
+        run: uv sync --frozen --python 3.12
+      - name: Ruff check
+        run: uv run ruff check .
+      - name: Ruff format check
+        run: uv run ruff format --check .
+      - name: Mypy
+        run: uv run mypy src streamlit_app.py
+      - name: Pytest e cobertura
+        run: >-
+          uv run pytest --cov=src/organiza --cov-report=term-missing
+          --cov-report=xml --cov-fail-under=85
+      - name: Auditoria de dependências
+        run: uv run pip-audit
+      - name: Publicar cobertura
+        uses: actions/upload-artifact@v6
+        with:
+          name: coverage-xml
+          path: coverage.xml
+
+  docker:
+    name: Build Docker
+    runs-on: ubuntu-latest
+    needs: quality
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Construir imagem
+        run: docker build --tag organiza:${{ github.sha }} .
+
