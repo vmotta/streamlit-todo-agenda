@@ -10,7 +10,7 @@ dependencies = [
   "pydantic-settings>=2.12,<3",
   "psycopg[binary]>=3.2.10,<4",
   "sqlalchemy==2.0.52",
-  "streamlit==1.60.0",
+  "streamlit==1.61.1",
   "streamlit-calendar==1.4.0",
   "tzdata>=2025.2",
 ]
