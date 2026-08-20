@@ -18,7 +18,7 @@ jobs:
     if: ${{ !github.event.repository.private || vars.ENABLE_CODEQL == 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           persist-credentials: false
       - name: Inicializar CodeQL
