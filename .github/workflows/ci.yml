@@ -42,7 +42,7 @@ jobs:
       - name: Auditoria de dependências
         run: uv run pip-audit
       - name: Publicar cobertura
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: coverage-xml
           path: coverage.xml
