@@ -2,6 +2,14 @@
 
 Todas as mudanças relevantes são registradas neste arquivo. O formato segue Keep a Changelog, sem declarar licença.
 
+## [Não lançado]
+
+### Alterado
+
+- Secrets raiz do Streamlit agora configuram o ambiente explicitamente.
+- URLs `postgres://` e `postgresql://` usam automaticamente o driver psycopg 3.
+- A interface alerta quando produção usa SQLite temporário e confirma PostgreSQL online.
+
 ## [0.1.0] - 2026-08-20
 
 ### Adicionado

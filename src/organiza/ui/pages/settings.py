@@ -40,4 +40,11 @@ def render_settings(context: AppContext) -> None:
     st.subheader("Ambiente")
     st.write(f"**Autenticação:** {context.settings.auth_mode}")
     st.write(f"**Banco de dados:** {context.settings.database_kind}")
+    if context.settings.uses_local_database:
+        st.warning(
+            "Este banco está em arquivo local. Em hospedagem cloud, use PostgreSQL "
+            "para que os dados sobrevivam a reinicializações e novos deploys."
+        )
+    else:
+        st.success("Persistência online configurada.")
     st.caption("Credenciais, tokens e connection strings completas nunca são exibidos.")

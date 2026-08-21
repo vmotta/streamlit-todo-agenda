@@ -82,6 +82,27 @@ uv run streamlit run streamlit_app.py
 
 As telas mostram apenas o tipo do banco, nunca a URL completa.
 
+### Streamlit Community Cloud com Neon
+
+O armazenamento local do Community Cloud é efêmero. Para manter tarefas e eventos
+entre reinicializações e deploys, crie um PostgreSQL no Neon e copie a connection
+string com **Connection pooling** habilitado. O Organiza aceita diretamente URLs
+iniciadas por `postgres://` ou `postgresql://` e seleciona o driver psycopg 3.
+
+Em **App settings → Secrets**, configure chaves raiz:
+
+```toml
+DATABASE_URL = "postgresql://usuario:senha@servidor-pooler.neon.tech/neondb?sslmode=require"
+ENVIRONMENT = "production"
+AUTH_MODE = "none"
+DEFAULT_TIMEZONE = "America/Sao_Paulo"
+LOG_LEVEL = "INFO"
+```
+
+Não versione o secret. Na primeira inicialização, as tabelas são criadas
+automaticamente. A tela de configurações confirma quando a persistência online está
+ativa e alerta quando uma implantação de produção ainda usa SQLite.
+
 ## Migrações
 
 Aplicar todas:

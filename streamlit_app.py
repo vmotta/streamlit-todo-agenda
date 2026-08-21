@@ -5,14 +5,22 @@ from __future__ import annotations
 import streamlit as st
 
 from organiza.auth import resolve_owner_id
-from organiza.config import get_settings
+from organiza.config import Settings, get_settings, load_settings
 from organiza.logging_config import configure_logging
 from organiza.ui.context import AppContext, get_services
 from organiza.ui.router import run_navigation
 
 
+def load_app_settings() -> Settings:
+    """Lê secrets raiz no Cloud e mantém variáveis de ambiente como fallback."""
+    try:
+        return load_settings(dict(st.secrets))
+    except FileNotFoundError:
+        return get_settings()
+
+
 def main() -> None:
-    settings = get_settings()
+    settings = load_app_settings()
     configure_logging(settings.log_level)
     st.set_page_config(
         page_title=settings.app_name,
@@ -20,6 +28,12 @@ def main() -> None:
         layout="wide",
         initial_sidebar_state="expanded",
     )
+    if settings.environment == "production" and settings.uses_local_database:
+        st.warning(
+            "O SQLite local pode ser apagado pelo provedor de hospedagem. "
+            "Configure DATABASE_URL com PostgreSQL nos Secrets para persistência online.",
+            icon="⚠️",
+        )
     claims: dict[str, object] | None = None
     if settings.auth_mode == "oidc":
         if not st.user.is_logged_in:
